@@ -17,7 +17,7 @@
     // wait if the window is not there yet
     HWND get_tf2_window(void)
     {
-        const char *window_name = "Team Fortress 2";
+        const char *window_name = "Team Fortress 2 - Direct3D 9 - 64 Bit";
 
         HWND window = FindWindowA(NULL, window_name);
         if (!window) {
