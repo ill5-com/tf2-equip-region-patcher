@@ -13,26 +13,36 @@
 // TODO implement these for linux
 #ifdef WINDOWS
 
-    // acquire hwnd to tf2 window
-    // wait if the window is not there yet
-    HWND get_tf2_window(void)
-    {
-        const char *window_name = "Team Fortress 2";
+BOOL CALLBACK EnumWindowsProc(HWND hwnd, LPARAM lParam) {
+    char window_title[MAX_PATH];
+    GetWindowTextA(hwnd, window_title, sizeof(window_title));
 
-        HWND window = FindWindowA(NULL, window_name);
-        if (!window) {
-            printf("Waiting for TF2 to start...\n");
-
-            do {
-                Sleep(1000);
-                window = FindWindowA(NULL, window_name);
-            } while (!window);
-        }
-
-        verbose_print("Found TF2 window with HWND %u\n", window);
-        return window;
+    if (strncmp(window_title, "Team Fortress 2", 15) == 0) {
+        *((HWND *)lParam) = hwnd; // Set the found window handle
+        return FALSE; // Stop enumeration
     }
 
+    return TRUE; // Continue enumeration
+}
+
+// acquire hwnd to tf2 window
+// wait if the window is not there yet
+HWND get_tf2_window(void) {
+    HWND window = NULL;
+
+    // Use EnumWindows to find the TF2 window
+    if (!EnumWindows(EnumWindowsProc, (LPARAM)&window)) {
+        printf("Waiting for TF2 to start...\n");
+
+        do {
+            Sleep(1000);
+            EnumWindows(EnumWindowsProc, (LPARAM)&window);
+        } while (!window);
+    }
+
+    verbose_print("Found TF2 window with HWND %u\n", window);
+    return window;
+}
 
     // find client.dll in tf2 module table
     // wait for max 15 seconds if it's not yet loaded
@@ -138,7 +148,7 @@ bool do_patch(void)
 
     // CConfirmCustomizeTextureDialog::PerformFilter
     unsigned char pattern[] = {
-		0x09, 0x86, 0xFF, 0xFF, 0x00, 0x00, 0x47
+		0x09, 0x83, 0xFF, 0xFF, 0x00, 0x00, 0xFF, 0xC7
     };
 
     unsigned char *addr = find_mem_cl(pattern, sizeof(pattern));
@@ -147,7 +157,7 @@ bool do_patch(void)
     } else {
         verbose_print("Pattern addr: 0x%" PRIXPTR "\n", (uintptr_t)addr);
 
-        set_mem(addr, (unsigned char []){0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x47, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90}, 13);
+        set_mem(addr, (unsigned char []){0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0xFF, 0xC7, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90}, 15);
         verbose_print("Patched!\n");
 
 		// and thats pretty much it
@@ -192,9 +202,10 @@ int main(int argc, char *argv[])
     bool res = attach_to_tf2() && calc_client_module_bounds() && do_patch();
 
     free_resources();
-
-    printf("Press any key to exit...\n");
-    (void)(getchar());
+    if (!res) {
+        printf("Press any key to exit...\n");
+        (void)(getchar());
+    }
 
     return res ? EXIT_SUCCESS : EXIT_FAILURE;
 }

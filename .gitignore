@@ -4,6 +4,7 @@
 !Makefile
 !README.md
 !UNLICENSE
+!launch_patcher.bat
 
 !src/*.c
 !src/*.h

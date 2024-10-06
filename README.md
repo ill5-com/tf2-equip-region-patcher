@@ -6,7 +6,7 @@ This tool allows you to remove various restrictions when equipping cosmetic item
 
 In short, now you can equip any cosmetic items you'd like, even if they're conflicting!
 
-This is a modification of [tf2patcher](https://github.com/default-username-was-already-taken/tf2patcher).
+This is a fork of the original equip region patcher, you can view it [here](https://github.com/ill5-com/tf2-equip-region-patcher). The project appears to be dead so I have updated it for the 64 bit version of TF2.
 
 ![https://i.imgur.com/hcHtRvU.jpeg](https://i.imgur.com/hcHtRvU.jpeg)
 
@@ -18,26 +18,25 @@ It is completely safe to use. However:
 
 ## How to use
 
-1. Download the latest release [here](https://github.com/ill5-com/tf2-equip-region-patcher/releases/latest);
+1. Download the latest release [here](https://github.com/rsedxcftvgyhbujnkiqwe/tf2-equip-region-patcher/releases/latest);
 
-2. Run tf2patcher.exe and launch TF2
+2. Extract the bat file and exe to your TF2 directory, right next to the game's executable (tf_win64.exe)
 
-3. After the software says it's done, press any key to exit it, or click the X button.
+3. Set your launch options to: `"C:\Program Files (x86)\Steam\steamapps\common\Team Fortress 2\launch_patcher.bat" %command%` and launch the game
 
-3. Equip any items you'd like!
+5. Equip any items you'd like!
 
 
 ## Building from source
 
-Run `make TARGET=32` or `make TARGET=64`, depending on which architecture you want to build for.
+Run `make TARGET=64`.
 
-C11-aware compiler is required.
+C11-aware compiler is required. 
 
+I used mingw-w64 + msys2 for compilation.
 
 ## Linux support?
-Currently this project can only be built for Windows (both x86 and x86-64).
-
-If you really need Linux binaries, create an issue and I'll take it from there.
+I have a Linux version of this patcher [here](https://github.com/rsedxcftvgyhbujnkiqwe/tf2-equip-region-patcher-linux)
 
 
 ## License
